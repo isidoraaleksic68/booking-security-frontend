@@ -33,4 +33,5 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MyCertificatesComponent
   ]
 })
+
 export class CertificateManagementModule { }

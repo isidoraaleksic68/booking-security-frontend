@@ -76,11 +76,11 @@ body {
 }
 
 .form-group input[type="submit"] {
-  background-color: #647f91; /* Plava boja */
-  color: white; /* Bijeli tekst */
-  font-size: 16px; /* Veličina fonta */
-  width: 150px; /* Širina dugmeta */
-  height: 60px; /* Visina dugmeta */
+  background-color: #78b1c4;
+  color: white;
+  font-size: 16px;
+  width: 150px;
+  height: 60px;
   border: none;
   top:50px;
   border-radius: 5px;
