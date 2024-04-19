@@ -6,7 +6,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AllCertificatesComponent } from './all-certificates/all-certificates.component';
 import { MyCertificatesComponent } from './my-certificates/my-certificates.component';
 import {RouterLink, RouterLinkActive} from "@angular/router";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 
 
@@ -22,7 +22,8 @@ import {FormsModule} from "@angular/forms";
     CommonModule,
     RouterLink,
     RouterLinkActive,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [
     GenerateCertificateComponent,
