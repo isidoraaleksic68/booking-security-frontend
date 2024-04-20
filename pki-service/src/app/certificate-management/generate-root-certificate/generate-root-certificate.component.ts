@@ -1,49 +1,66 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {User} from "../../model/user";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User } from "../../model/user";
+import { CertificateService } from "../../services/certificate.service";
+import { UserService } from "../../services/user.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-generate-root-certificate',
   templateUrl: './generate-root-certificate.component.html',
   styleUrls: ['./generate-root-certificate.component.css']
 })
-export class GenerateRootCertificateComponent implements OnInit{
-  subjectCN: any;
-  subjectO: any;
-  subjectOU: any;
-  subjectCountry: any;
-  startDate: any;
-  endDate: any;
+export class GenerateRootCertificateComponent implements OnInit {
+  certificateForm!: FormGroup;
   user: User | undefined;
 
+  constructor(private formBuilder: FormBuilder, private certificateService: CertificateService,
+              private userService: UserService, private snackBar: MatSnackBar) { }
+
   ngOnInit(): void {
-    // this.userService.getUserByID().subscribe((res: any) => {
-    //   this.user = res;
-      // this.subjectO = this.user?.organisation;
-      // this.subjectOU = this.user?.unit;
-      // this.subjectCountry = this.user?.state;
-    // });
+    this.certificateForm = this.formBuilder.group({
+      subjectCN: ['', Validators.required],
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required]
+    });
+
+    this.userService.getUserByID().subscribe((res: any) => {
+      this.user = res;
+      this.certificateForm?.get('subjectO')?.setValue(this.user?.organisation);
+      this.certificateForm?.get('subjectOU')?.setValue(this.user?.unit);
+      this.certificateForm?.get('subjectCountry')?.setValue(this.user?.state);
+    });
   }
 
   createCertificate() {
-    const certificateDTO: any = {
+    if (this.certificateForm?.invalid) {
+      return;
+    }
+
+    var certificateDTO = {
       userID: this.user?.id,
-      subjectCN: this.subjectCN,
-      subjectO: this.subjectO,
-      subjectOU: this.subjectOU,
-      subjectCountry: this.subjectCountry,
-      startDate: this.startDate,
-      endDate: this.endDate,
+      subjectCN: this.certificateForm?.get('subjectCN')?.value,
+      subjectO: this.certificateForm?.get('subjectO')?.value,
+      subjectOU: this.certificateForm?.get('subjectOU')?.value,
+      subjectCountry: this.certificateForm?.get('subjectCountry')?.value,
+      startDate: this.certificateForm?.get('startDate')?.value,
+      endDate: this.certificateForm?.get('endDate')?.value,
       selectedAuthority: 'true',
     };
 
-    let startDateMs = Date.parse(this.startDate);
-    let endDateMs = Date.parse(this.endDate);
+    let startDateMs = Date.parse(this.certificateForm?.get('startDate')?.value);
+    let endDateMs = Date.parse(this.certificateForm?.get('endDate')?.value);
 
     if (endDateMs < startDateMs || startDateMs < Date.now() - 86400000) {
-      window.alert('Wrong date!');
+      this.snackBar.open("Invalid date.", 'Close', {
+        duration: 3000,
+      });
     } else {
-      // this.certificateService.createRootCertificate(certificateDTO).subscribe();
+      this.certificateService.createRootCertificate(certificateDTO).subscribe(() => {
+        this.snackBar.open("Certificate is created successfully.", 'Close', {
+          duration: 3000,
+        });
+      });
     }
   }
 }

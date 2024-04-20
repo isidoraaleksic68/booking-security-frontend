@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {CertificateService} from "../../services/certificate.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-all-certificates',
@@ -9,7 +11,14 @@ import {Component, OnInit} from '@angular/core';
 export class AllCertificatesComponent implements OnInit{
   currentPage: number = 1;
   itemsPerPage: number = 5;
-  certificates = [
+
+  constructor(
+    private certificateService: CertificateService,
+    private snackBar: MatSnackBar
+  ) {}
+
+
+  private certificates = [
     {
       type: 'Root CA1',
       issuer: 'Example Root CA',
@@ -144,8 +153,16 @@ export class AllCertificatesComponent implements OnInit{
     }
   ];
 
-  revokeCertificate(alias: string) {
+  ngOnInit(): void {
+    this.certificateService.getCertificates().subscribe((res: any) => {
+      this.certificates = res;
+    });
+  }
 
+
+  revokeCertificate(alias: string) {
+    this.certificateService.revokeCertificate(alias).subscribe();
+    location.reload();
   }
 
   validateCertificate(alias: string) {
@@ -153,10 +170,17 @@ export class AllCertificatesComponent implements OnInit{
   }
 
   saveCertificate(alias: string) {
-
-  }
-
-  ngOnInit(): void {
+    this.certificateService.saveCertificate(alias).subscribe((res) => {
+      if (!res) {
+        this.snackBar.open("Certificate saved successfully!", 'Close', {
+          duration: 3000,
+        });
+      } else {
+        this.snackBar.open("Error, certificate can not be saved!", 'Close', {
+          duration: 3000,
+        });
+      }
+    });
   }
 
   get paginatedCertificates(): any[] {

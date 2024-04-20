@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CertificateService} from "../../services/certificate.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {Certificate} from "../../model/certificate";
 
 @Component({
   selector: 'app-generate-certificate',
@@ -6,185 +9,137 @@ import { Component } from '@angular/core';
   styleUrls: ['./generate-certificate.component.css']
 })
 
-export class GenerateCertificateComponent {
-  currentPage: number = 1;
-  itemsPerPage: number = 5;
-  certificates = [
-    {
-      type: 'Root CA1',
-      issuer: 'Example Root CA',
-      subject: 'Example Root CA',
-      startDate: '2022-01-01',
-      endDate: '2030-01-01',
-      alias: 'my root ca',
-      isRevoked: false
-    },
-    {
-      type: 'Intermediate CA2',
-      issuer: 'Example Root CA',
-      subject: 'Example Intermediate CA',
-      startDate: '2022-01-01',
-      endDate: '2025-01-01',
-      alias: 'intermediate ca',
-      isRevoked: false
-    },
-    {
-      type: 'End-entity3',
-      issuer: 'Example Intermediate CA',
-      subject: 'Example End-entity Certificate',
-      startDate: '2022-01-01',
-      endDate: '2023-01-01',
-      alias: 'end-entity cert',
-      isRevoked: true
-    },
-    {
-      type: 'Root CA4',
-      issuer: 'Example Root CA',
-      subject: 'Example Root CA',
-      startDate: '2022-01-01',
-      endDate: '2030-01-01',
-      alias: 'my root ca',
-      isRevoked: false
-    },
-    {
-      type: 'Intermediate CA5',
-      issuer: 'Example Root CA',
-      subject: 'Example Intermediate CA',
-      startDate: '2022-01-01',
-      endDate: '2025-01-01',
-      alias: 'intermediate ca',
-      isRevoked: false
-    },
-    {
-      type: 'End-entity6',
-      issuer: 'Example Intermediate CA',
-      subject: 'Example End-entity Certificate',
-      startDate: '2022-01-01',
-      endDate: '2023-01-01',
-      alias: 'end-entity cert',
-      isRevoked: true
-    },{
-      type: 'Root CA7',
-      issuer: 'Example Root CA',
-      subject: 'Example Root CA',
-      startDate: '2022-01-01',
-      endDate: '2030-01-01',
-      alias: 'my root ca',
-      isRevoked: false
-    },
-    {
-      type: 'Intermediate CA8',
-      issuer: 'Example Root CA',
-      subject: 'Example Intermediate CA',
-      startDate: '2022-01-01',
-      endDate: '2025-01-01',
-      alias: 'intermediate ca',
-      isRevoked: false
-    },
-    {
-      type: 'End-entity9',
-      issuer: 'Example Intermediate CA',
-      subject: 'Example End-entity Certificate',
-      startDate: '2022-01-01',
-      endDate: '2023-01-01',
-      alias: 'end-entity cert',
-      isRevoked: true
-    },{
-      type: 'Root CA10',
-      issuer: 'Example Root CA',
-      subject: 'Example Root CA',
-      startDate: '2022-01-01',
-      endDate: '2030-01-01',
-      alias: 'my root ca',
-      isRevoked: false
-    },
-    {
-      type: 'Intermediate CA11',
-      issuer: 'Example Root CA',
-      subject: 'Example Intermediate CA',
-      startDate: '2022-01-01',
-      endDate: '2025-01-01',
-      alias: 'intermediate ca',
-      isRevoked: false
-    },
-    {
-      type: 'End-entity12',
-      issuer: 'Example Intermediate CA',
-      subject: 'Example End-entity Certificate',
-      startDate: '2022-01-01',
-      endDate: '2023-01-01',
-      alias: 'end-entity cert',
-      isRevoked: true
-    },{
-      type: 'Root CA13',
-      issuer: 'Example Root CA',
-      subject: 'Example Root CA',
-      startDate: '2022-01-01',
-      endDate: '2030-01-01',
-      alias: 'my root ca',
-      isRevoked: false
-    },
-    {
-      type: 'Intermediate CA14',
-      issuer: 'Example Root CA',
-      subject: 'Example Intermediate CA',
-      startDate: '2022-01-01',
-      endDate: '2025-01-01',
-      alias: 'intermediate ca',
-      isRevoked: false
-    },
-    {
-      type: 'End-entity15',
-      issuer: 'Example Intermediate CA',
-      subject: 'Example End-entity Certificate',
-      startDate: '2022-01-01',
-      endDate: '2023-01-01',
-      alias: 'end-entity cert',
-      isRevoked: true
-    }
-  ];
-
-  selectedAuthority: any;
-  subjectCN: any;
-  subjectO: any;
-  subjectOU: any;
-  subjectCountry: any;
+export class GenerateCertificateComponent implements OnInit{
+  certificates!: Certificate[]
+  selectedAuthority!: string;
+  subjectCN!:string;
+  subjectO!: string;
+  subjectOU!: string;
+  subjectCountry!:string;
   startDate: any;
   endDate: any;
-  selectedKeySize: any;
+  selectedKeySize!: string;
   selectedEndDate: any;
   selectedStartDate: any;
-  selectedST: any;
-  selectedOU: any;
-  selectedO: any;
-  selectedCN: any;
+  selectedST!: string;
+  selectedOU!: string;
+  selectedO!: string;
+  selectedCN!: string;
   selectedTemp: any;
+  selectedAlias!: string;
+  selectedC!: string;
+  selectedUN!: string;
 
-  createCertificate() {
+  constructor(
+    private certificateService: CertificateService,
+    private snackBar : MatSnackBar
+  ) {}
 
-  }
-
-  onSelectionChanged() {
-
-  }
-  get paginatedCertificates(): any[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.certificates.slice(startIndex, endIndex);
-  }
-
-  onPageChange(pageNumber: number): void {
-    this.currentPage = pageNumber;
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  ngOnInit(): void {
+    this.certificateService.getCertificatesByUserID().subscribe((res: any) => {
+      this.certificates = res;
     });
   }
 
-  getPages(): number[] {
-    const totalItems = this.certificates.length;
-    const totalPages = Math.ceil(totalItems / this.itemsPerPage);
-    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  findCertificateByAlias(alias: string): Certificate | undefined {
+    return this.certificates.find((cert) => cert.alias === alias);
   }
 
+  createCertificate() {
+    const certificateDTO: any = {
+      aliasIssuer: this.selectedAlias,
+      subjectCN: this.subjectCN,
+      subjectO: this.subjectO,
+      subjectOU: this.subjectOU,
+      subjectCountry: this.subjectCountry,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      selectedAuthority: this.selectedAuthority,
+    };
+
+    let selectedStartDateMs = this.parseDate(this.selectedStartDate).getTime();
+    let startDateMs = Date.parse(this.startDate);
+    let endDateMs = Date.parse(this.endDate);
+    let selectedEndDateMs = this.parseDate(this.selectedEndDate).getTime();
+
+    if (
+      startDateMs > selectedStartDateMs &&
+      endDateMs < selectedEndDateMs &&
+      startDateMs > Date.now() - 86400000 &&
+      startDateMs < selectedEndDateMs &&
+      endDateMs > startDateMs
+    ) {
+      this.certificateService.createCertificate(certificateDTO).subscribe();
+    } else {
+      window.alert('Wrong date!');
+    }
+  }
+
+  onSelectionChanged() {
+    this.selectedAlias = this.selectedKeySize;
+    const selectedCert = this.findCertificateByAlias(this.selectedAlias);
+
+    if (selectedCert) {
+      const certSubject = selectedCert.subject;
+      const subjectObj: any = {
+        C: '',
+        ST: '',
+        L: '',
+        OU: '',
+        O: '',
+        CN: '',
+      };
+
+      certSubject?.split(',').forEach((item: string) => {
+        const parts = item.trim().split('=');
+        subjectObj[parts[0]] = parts[1];
+      });
+
+      this.selectedCN = subjectObj.CN; // access the CN value
+      this.selectedC = subjectObj.C;
+      this.selectedEndDate = this.findCertificateByAlias(
+        this.selectedKeySize
+      )?.endDate;
+      this.selectedStartDate = this.findCertificateByAlias(
+        this.selectedKeySize
+      )?.startDate;
+      this.selectedO = subjectObj.O;
+      this.selectedOU = subjectObj.OU;
+      this.selectedUN = subjectObj.UN;
+      this.selectedST = subjectObj.ST;
+      this.selectedTemp = this.findCertificateByAlias(
+        this.selectedKeySize
+      )?.type;
+    }
+  }
+  parseDate(dateStr: string): Date {
+    const months: { [key: string]: number } = {
+      Jan: 0,
+      Feb: 1,
+      Mar: 2,
+      Apr: 3,
+      May: 4,
+      Jun: 5,
+      Jul: 6,
+      Aug: 7,
+      Sep: 8,
+      Oct: 9,
+      Nov: 10,
+      Dec: 11,
+    };
+
+    const [dayOfWeek, monthStr, dayOfMonth, time, timeZone, year] =
+      dateStr.split(' ');
+    const [hours, minutes, seconds] = time.split(':');
+
+    const date = new Date();
+    date.setUTCFullYear(Number(year));
+    date.setUTCMonth(months[monthStr]);
+    date.setUTCDate(Number(dayOfMonth));
+    date.setUTCHours(Number(hours));
+    date.setUTCMinutes(Number(minutes));
+    date.setUTCSeconds(Number(seconds));
+
+    return date;
+  }
 }

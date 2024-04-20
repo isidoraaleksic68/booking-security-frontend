@@ -104,7 +104,7 @@
               name="keySize"
               required
             >
-              <option *ngFor="let cert of paginatedCertificates" [value]="cert.alias">
+              <option *ngFor="let cert of certificates" [value]="cert.alias">
                 {{ cert.alias }}
               </option>
             </select>

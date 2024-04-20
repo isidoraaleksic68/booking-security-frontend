@@ -24,6 +24,8 @@ body {
 }
 
 .container {
+  text-align: center;
+  align-items: center;
   margin: 10% auto;
   max-width: 700px;
   padding: 5% 10%;
@@ -33,7 +35,7 @@ body {
 }
 
 .form-group {
-  margin-bottom: 40px;
+  margin-top: 40px;
 }
 
 .form-group label {
@@ -75,14 +77,20 @@ body {
   margin-top: 5px;
 }
 
-.form-group input[type="submit"] {
-  background-color: #78b1c4;
-  color: white;
-  font-size: 16px;
-  width: 150px;
-  height: 60px;
-  border: none;
-  top:50px;
-  border-radius: 5px;
-  cursor: pointer;
+button[type="submit"] {
+  background-color: #78b1c4; /* Postavite boju pozadine */
+  color: white; /* Postavite boju teksta na belu */
+  padding: 10px 20px; /* Dodajte prostor oko teksta dugmeta */
+  border: none; /* Uklonite ivice dugmeta */
+  cursor: pointer; /* Postavite kursor na pokazivač */
+  width: 200px;
+  height: 70px;
+}
+
+#button-submit{
+  margin-top: 40px;
+  align-items: center;
+}
+button[type="submit"]:hover {
+  background-color: #5a8999; /* Promenite boju pozadine na hover */
 }
