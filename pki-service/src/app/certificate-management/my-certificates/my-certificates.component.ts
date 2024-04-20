@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {Certificate} from "../../model/certificate";
+import {CertificateService} from "../../services/certificate.service";
 
 @Component({
   selector: 'app-my-certificates',
@@ -9,7 +11,16 @@ import {Component, OnInit} from '@angular/core';
 export class MyCertificatesComponent implements OnInit{
   currentPage: number = 1;
   itemsPerPage: number = 5;
-  certificates = [
+
+  constructor(private certificateService: CertificateService) {}
+
+  ngOnInit(): void {
+    this.certificateService.getCertificatesByUserID().subscribe((res: any) => {
+      this.certificates = res;
+    });
+  }
+
+  private certificates = [
     {
       type: 'Root CA1',
       issuer: 'Example Root CA',
@@ -144,11 +155,8 @@ export class MyCertificatesComponent implements OnInit{
     }
   ];
 
-  revokeCertificate(alias: any) {
-
-  }
-
-  ngOnInit(): void {
+  revokeCertificate(alias: string) {
+    this.certificateService.revokeCertificate(alias).subscribe();
   }
 
   get paginatedCertificates(): any[] {

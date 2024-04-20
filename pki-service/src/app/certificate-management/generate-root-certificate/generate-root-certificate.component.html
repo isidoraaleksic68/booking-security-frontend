@@ -1,106 +1,44 @@
+<!-- HTML -->
 <body>
-<div>
-  <div class="container">
-    <form>
-      <h1>Root certificate</h1>
-      <br />
-      <div class="form-group">
-        <div class="form-column">
-          <label for="commonName1">Certificate Authority</label>
-          <input
-            type="text"
-            style="background-color: #c0c3c4"
-            id="commonName1"
-            name="commonName"
-            value="TRUE"
-            readonly="true"
-            required
-          />
-        </div>
+<div class="container">
+  <form [formGroup]="certificateForm" (ngSubmit)="createCertificate()">
+    <h1>Root Certificate</h1>
+    <div class="form-group">
+      <label for="subjectCN">Common Name</label>
+      <input type="text" id="subjectCN" formControlName="subjectCN" required>
+      <div *ngIf="certificateForm?.get('subjectCN')?.invalid && (certificateForm?.get('subjectCN')?.dirty || certificateForm?.get('subjectCN')?.touched)" class="invalid-feedback">
+        Common Name is required
       </div>
-      <div class="form-group">
-        <div class="form-column">
-          <label for="commonName2">Common Name</label>
-          <input
-            type="text"
-            id="commonName2"
-            name="commonName"
-            [(ngModel)]="subjectCN"
-            required
-          />
-        </div>
-        <div class="form-column">
-          <label for="organization">Organization</label>
-          <input
-            style="background-color: #c0c3c4"
-            type="text"
-            id="organization"
-            name="organization"
-            readonly="true"
-            [(ngModel)]="subjectO"
-            required
-          />
-        </div>
+    </div>
+    <div class="form-group">
+      <label for="subjectO">Organization</label>
+      <input style="background-color: #c0c3c4" type="text" id="subjectO" formControlName="subjectO" required [readonly]="true">
+    </div>
+    <div class="form-group">
+      <label for="subjectOU">Organizational Unit</label>
+      <input style="background-color: #c0c3c4" type="text" id="subjectOU" formControlName="subjectOU" required [readonly]="true">
+    </div>
+    <div class="form-group">
+      <label for="subjectCountry">Country</label>
+      <input style="background-color: #c0c3c4" type="text" id="subjectCountry" formControlName="subjectCountry" required maxlength="2" [readonly]="true">
+    </div>
+    <div class="form-group">
+      <label for="startDate">Start Date</label>
+      <input type="date" id="startDate" formControlName="startDate" required>
+      <div *ngIf="certificateForm.get('startDate')?.invalid && (certificateForm.get('startDate')?.dirty || certificateForm.get('startDate')?.touched)" class="invalid-feedback">
+        Start Date is required
       </div>
-      <div class="form-group">
-        <div class="form-column">
-          <label for="organizationalUnit">Organizational Unit</label>
-          <input
-            type="text"
-            readonly="true"
-            style="background-color: #c0c3c4"
-            id="organizationalUnit"
-            name="organizationalUnit"
-            [(ngModel)]="subjectOU"
-            required
-          />
-        </div>
-        <div class="form-column">
-          <label for="country">Country</label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            readonly="true"
-            style="background-color: #c0c3c4"
-            maxlength="2"
-            [(ngModel)]="subjectCountry"
-            required
-          />
-        </div>
+    </div>
+    <div class="form-group">
+      <label for="endDate">End Date</label>
+      <input type="date" id="endDate" formControlName="endDate" required>
+      <div *ngIf="certificateForm.get('endDate')?.invalid && (certificateForm.get('endDate')?.dirty || certificateForm.get('endDate')?.touched)" class="invalid-feedback">
+        End Date is required
       </div>
-      <div class="form-group">
-        <div class="form-column">
-          <label for="startDate">Start Date</label>
-          <input
-            [(ngModel)]="startDate"
-            type="date"
-            id="startDate"
-            name="startDate"
-            required
-          />
-        </div>
-        <div class="form-column">
-          <label for="endDate">End Date</label>
-          <input
-            [(ngModel)]="endDate"
-            type="date"
-            id="endDate"
-            name="endDate"
-            required
-          />
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <div style="text-align: center; margin-top: 4%" class="form-group">
-    <input
-      style="width: 200px; height: 70px; color: white; font-size: 16px;"
-      (click)="createCertificate()"
-      type="submit"
-      value="Submit"
-    />
-  </div>
+    </div>
+    <div id="button-submit">
+      <button type="submit" [disabled]="certificateForm.invalid">Submit</button>
+    </div>
+  </form>
 </div>
 </body>
