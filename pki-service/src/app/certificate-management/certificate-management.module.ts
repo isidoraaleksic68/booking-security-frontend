@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GenerateCertificateComponent } from './generate-certificate/generate-certificate.component';
-import { GenerateRootCertificateComponent } from './generate-root-certificate/generate-root-certificate.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AllCertificatesComponent } from './all-certificates/all-certificates.component';
 import { MyCertificatesComponent } from './my-certificates/my-certificates.component';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { HostCertificateRequestComponent } from './host-certificate-request/host-certificate-request.component';
 
 
 
 @NgModule({
   declarations: [
     GenerateCertificateComponent,
-    GenerateRootCertificateComponent,
     NavbarComponent,
     AllCertificatesComponent,
-    MyCertificatesComponent
+    MyCertificatesComponent,
+    HostCertificateRequestComponent
   ],
   imports: [
     CommonModule,
@@ -27,10 +27,10 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
   ],
   exports: [
     GenerateCertificateComponent,
-    GenerateRootCertificateComponent,
     NavbarComponent,
     AllCertificatesComponent,
-    MyCertificatesComponent
+    MyCertificatesComponent,
+    HostCertificateRequestComponent
   ]
 })
 

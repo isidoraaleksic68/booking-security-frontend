@@ -15,6 +15,7 @@ export class MyCertificatesComponent implements OnInit{
   constructor(private certificateService: CertificateService) {}
 
   ngOnInit(): void {
+    //dobavljaju se sertifikati vlasnika koji udje da vidi svoje sertifikaate
     this.certificateService.getCertificatesByUserID().subscribe((res: any) => {
       this.certificates = res;
     });

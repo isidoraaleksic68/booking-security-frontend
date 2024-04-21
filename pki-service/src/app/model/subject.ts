@@ -1,9 +1,7 @@
-interface SubjectObj {
-  C?: string;
-  ST?: string;
-  L?: string;
-  OU?: string;
-  O?: string;
-  CN?: string;
+export interface SubjectObj {
+  country?: string;
+  organisationUnit?: string;
+  organisation?: string;
+  commonName?: string;
 }
 
