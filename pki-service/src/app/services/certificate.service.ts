@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Certificate} from "../model/certificate";
 import {UserService} from "./user.service";
+import {User} from "../model/user";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {UserService} from "./user.service";
 
 export class CertificateService {
   apiHost: string = 'http://localhost:8080/';
+  user: User | undefined;
   headers: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',
   });
@@ -24,7 +26,11 @@ export class CertificateService {
   }
 
   getCertificatesByUserID(): Observable<Certificate[]> {
-    var userID = this.userService.getUserId();
+    this.userService.getCurrentUser().subscribe((res: any) => {
+      this.user = res;
+      console.log(this.user);
+    });
+    var userID = this.user?.email;
     return this.http.get<Certificate[]>(
       this.apiHost + 'api/certificate/getUserCertificates/' + userID,
       {

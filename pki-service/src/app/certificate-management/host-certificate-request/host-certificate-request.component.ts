@@ -39,9 +39,10 @@ export class HostCertificateRequestComponent implements OnInit{
       isCRLS: ['', Validators.required]
     });
 
-    this.userService.getUserByID().subscribe((res: any) => {
+    this.userService.getCurrentUser().subscribe((res: any) => {
       this.user = res;
-      this.certificateForm?.get('email')?.setValue(this.user?.account?.username);
+      console.log(this.user?.email);
+      this.certificateForm?.get('email')?.setValue(this.user?.email);
     });
   }
 
@@ -51,7 +52,7 @@ export class HostCertificateRequestComponent implements OnInit{
     }
 
     var certificateRequest:HostCertificateRequest = {
-      hostUsername: this.user?.account?.username,
+      hostUsername: this.user?.email,
       commonName: this.certificateForm?.get('subjectCN')?.value,
       organisation: this.certificateForm?.get('subjectO')?.value,
       organisationUnit: this.certificateForm?.get('subjectOU')?.value,
