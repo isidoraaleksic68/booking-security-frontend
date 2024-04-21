@@ -166,7 +166,17 @@ export class AllCertificatesComponent implements OnInit{
   }
 
   validateCertificate(alias: string) {
-
+    this.certificateService.validateCertificate(alias).subscribe((res) => {
+      if (res) {
+        this.snackBar.open("Certificate is valid!", 'Close', {
+          duration: 3000,
+        });
+      } else {
+        this.snackBar.open("Certificate is invalid!", 'Close', {
+          duration: 3000,
+        });
+      }
+    });
   }
 
   saveCertificate(alias: string) {

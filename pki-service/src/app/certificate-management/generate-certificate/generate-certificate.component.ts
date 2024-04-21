@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {CertificateService} from "../../services/certificate.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Certificate} from "../../model/certificate";
+import {HostCertificateRequest} from "../../model/host-certificate-request";
+import {SubjectObj} from "../../model/subject";
 
 @Component({
   selector: 'app-generate-certificate',
@@ -29,6 +31,13 @@ export class GenerateCertificateComponent implements OnInit{
   selectedAlias!: string;
   selectedC!: string;
   selectedUN!: string;
+  hostRequests!: HostCertificateRequest[];
+  isCRL!: boolean;
+  isCA!: boolean;
+  isDS!: boolean;
+  isKE!: boolean;
+  isKCS!: boolean;
+  CAcertificates! : Certificate[];
 
   constructor(
     private certificateService: CertificateService,
@@ -36,8 +45,12 @@ export class GenerateCertificateComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    this.certificateService.getCertificatesByUserID().subscribe((res: any) => {
+    //dobavljamo sve zahteve
+    this.certificateService.getCertificates().subscribe((res: any) => {
       this.certificates = res;
+      this.CAcertificates = this.certificates.filter((cert: Certificate) => {
+        return cert.isCA === true;
+      });
     });
   }
 
@@ -45,16 +58,20 @@ export class GenerateCertificateComponent implements OnInit{
     return this.certificates.find((cert) => cert.alias === alias);
   }
 
+
+
   createCertificate() {
-    const certificateDTO: any = {
-      aliasIssuer: this.selectedAlias,
-      subjectCN: this.subjectCN,
-      subjectO: this.subjectO,
-      subjectOU: this.subjectOU,
-      subjectCountry: this.subjectCountry,
-      startDate: this.startDate,
-      endDate: this.endDate,
-      selectedAuthority: this.selectedAuthority,
+
+    const certificateDTO: Certificate = {
+      issuerAlias :this.selectedAlias,
+      subjectCommonName:this.subjectCN,
+      startDate:this.startDate,
+      endDate:this.endDate,
+      isCA: this.isCA,
+      isDS: this.isDS,
+      isKE: this.isKE,
+      isKCS: this.isKCS,
+      isCRLS: this.isCRL
     };
 
     let selectedStartDateMs = this.parseDate(this.selectedStartDate).getTime();
@@ -80,11 +97,9 @@ export class GenerateCertificateComponent implements OnInit{
     const selectedCert = this.findCertificateByAlias(this.selectedAlias);
 
     if (selectedCert) {
-      const certSubject = selectedCert.subject;
+      const certSubject = selectedCert.subjectCommonName;
       const subjectObj: any = {
         C: '',
-        ST: '',
-        L: '',
         OU: '',
         O: '',
         CN: '',
@@ -109,9 +124,10 @@ export class GenerateCertificateComponent implements OnInit{
       this.selectedST = subjectObj.ST;
       this.selectedTemp = this.findCertificateByAlias(
         this.selectedKeySize
-      )?.type;
+      )?.isCA;
     }
   }
+
   parseDate(dateStr: string): Date {
     const months: { [key: string]: number } = {
       Jan: 0,
